@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1066258727296",
+    "project_id": "push-app-test-92654",
+    "storage_bucket": "push-app-test-92654.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1066258727296:android:70b059d5d8d7daa5610165",
+        "android_client_info": {
+          "package_name": "net.vyachin.push_app_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1066258727296-3hq55kc540c0nj0kkeqmq9e9h3qetlhj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhIPMvFDUE-MQe8b4s5UaBEecSk2OCxrA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1066258727296-3hq55kc540c0nj0kkeqmq9e9h3qetlhj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
