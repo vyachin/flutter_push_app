@@ -1,6 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 Future<void> _messageHandler(RemoteMessage message) async {
   print('background message ${message.notification!.body}');
@@ -10,9 +14,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
+  final initializationSettingsAndroid =
+      AndroidInitializationSettings('app_icon');
+
+  final initializationSettings =
+      InitializationSettings(android: initializationSettingsAndroid);
+
+  await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   FirebaseMessaging.onBackgroundMessage(_messageHandler);
-
   runApp(const PushAppTest());
 }
 
@@ -46,6 +56,24 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     messaging = FirebaseMessaging.instance;
+  }
+
+  Future<void> showNotification(
+      int id, String title, String body, String? payload) async {
+    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'your channel id',
+      'your channel name',
+      'your channel description',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    final iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    final platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+    await _flutterLocalNotificationsPlugin
+        .show(id, title, body, platformChannelSpecifics, payload: payload);
   }
 
   @override
@@ -86,15 +114,18 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final remoteMessage = snapshot.data as RemoteMessage;
+                  showNotification(
+                    (remoteMessage.messageId ?? '').hashCode,
+                    remoteMessage.notification!.title ?? '',
+                    remoteMessage.notification!.body ?? '',
+                    remoteMessage.data.toString(),
+                  );
+
                   return Column(
                     children: [
                       Text(remoteMessage.data.toString()),
-                      Text('category ${remoteMessage.category}'),
                       Text('from ${remoteMessage.from}'),
                       Text('messageId ${remoteMessage.messageId}'),
-                      Text('messageType ${remoteMessage.messageType}'),
-                      Text('senderId ${remoteMessage.senderId}'),
-                      Text('threadId ${remoteMessage.threadId}'),
                       Text('title ${remoteMessage.notification!.title}'),
                       Text('body ${remoteMessage.notification!.body}'),
                     ],
@@ -103,7 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const CircularProgressIndicator();
               },
             ),
-            Text('message opened app', style: Theme.of(context).textTheme.headline5),
+            Text('message opened app',
+                style: Theme.of(context).textTheme.headline5),
             StreamBuilder(
               stream: FirebaseMessaging.onMessageOpenedApp,
               builder: (context, snapshot) {
