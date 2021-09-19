@@ -96,6 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const CircularProgressIndicator();
               },
             ),
+            const SizedBox(height: 20),
             Text('refresh token', style: Theme.of(context).textTheme.headline5),
             StreamBuilder(
               stream: messaging.onTokenRefresh,
@@ -108,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const CircularProgressIndicator();
               },
             ),
+            const SizedBox(height: 20),
             Text('message', style: Theme.of(context).textTheme.headline5),
             StreamBuilder(
               stream: FirebaseMessaging.onMessage,
@@ -134,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const CircularProgressIndicator();
               },
             ),
+            const SizedBox(height: 20),
             Text('message opened app',
                 style: Theme.of(context).textTheme.headline5),
             StreamBuilder(
